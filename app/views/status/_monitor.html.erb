@@ -1,0 +1,18 @@
+<div id="<%= dom_id(monitor) %>" class="flex items-center justify-between px-6 py-4">
+  <div class="flex items-center space-x-3">
+    <% if monitor.up? %>
+      <span class="h-3 w-3 rounded-full bg-green-400"></span>
+    <% elsif monitor.down? %>
+      <span class="h-3 w-3 rounded-full bg-red-400"></span>
+    <% else %>
+      <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
+    <% end %>
+    <span class="text-sm font-medium text-gray-900"><%= monitor.name %></span>
+  </div>
+  <div class="flex items-center space-x-4">
+    <% if monitor.last_checked_at %>
+      <span class="text-xs text-gray-500">Checked <%= time_ago_in_words(monitor.last_checked_at) %> ago</span>
+    <% end %>
+    <%= status_badge(monitor.current_status) %>
+  </div>
+</div>

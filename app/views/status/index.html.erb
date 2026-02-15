@@ -1,0 +1,29 @@
+<%= turbo_stream_from "monitor_status" %>
+
+<div class="max-w-4xl mx-auto">
+  <%= render "overall_status", overall_status: @overall_status %>
+
+  <div class="mt-8">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Services</h2>
+    <div class="bg-white rounded-lg shadow divide-y divide-gray-200">
+      <% if @monitors.any? %>
+        <% @monitors.each do |monitor| %>
+          <%= render "monitor", monitor: monitor %>
+        <% end %>
+      <% else %>
+        <div class="p-6 text-center text-gray-500">No monitors configured.</div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-8" id="active_incidents">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Active Incidents</h2>
+    <% if @incidents.any? %>
+      <% @incidents.each do |incident| %>
+        <%= render "incident", incident: incident %>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500 text-sm">No active incidents.</p>
+    <% end %>
+  </div>
+</div>

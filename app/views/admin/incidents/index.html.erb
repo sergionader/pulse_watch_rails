@@ -1,0 +1,59 @@
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">Incidents</h1>
+  <%= link_to "New Incident", new_admin_incident_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700" %>
+</div>
+
+<% if @active_incidents.any? %>
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">Active Incidents</h2>
+  <div class="space-y-4 mb-8">
+    <% @active_incidents.each do |incident| %>
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <%= link_to incident.title, admin_incident_path(incident), class: "text-sm font-semibold text-indigo-600 hover:text-indigo-900" %>
+            <p class="text-xs text-gray-500 mt-1">
+              Started <%= time_ago_in_words(incident.created_at) %> ago
+              <% if incident.site_monitors.any? %>
+                &middot; Affecting: <%= incident.site_monitors.pluck(:name).join(", ") %>
+              <% end %>
+            </p>
+          </div>
+          <div class="flex space-x-2">
+            <%= severity_badge(incident.severity) %>
+            <%= incident_status_badge(incident.status) %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-green-50 rounded-lg p-6 mb-8 text-center">
+    <p class="text-sm font-medium text-green-800">No active incidents</p>
+  </div>
+<% end %>
+
+<% if @resolved_incidents.any? %>
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">Recently Resolved</h2>
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Severity</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Resolved</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @resolved_incidents.each do |incident| %>
+          <tr>
+            <td class="px-6 py-4">
+              <%= link_to incident.title, admin_incident_path(incident), class: "text-sm text-indigo-600 hover:text-indigo-900" %>
+            </td>
+            <td class="px-6 py-4"><%= severity_badge(incident.severity) %></td>
+            <td class="px-6 py-4 text-sm text-gray-500"><%= incident.resolved_at ? time_ago_in_words(incident.resolved_at) + " ago" : "N/A" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

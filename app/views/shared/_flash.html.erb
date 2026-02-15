@@ -1,0 +1,17 @@
+<% flash.each do |type, message| %>
+  <% css_class = case type.to_s
+    when "notice", "success" then "bg-green-50 text-green-800 border-green-200"
+    when "alert", "error"   then "bg-red-50 text-red-800 border-red-200"
+    else "bg-blue-50 text-blue-800 border-blue-200"
+    end %>
+  <div class="border-b <%= css_class %>" data-controller="flash">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <p class="text-sm font-medium"><%= message %></p>
+      <button type="button" data-action="flash#dismiss" class="text-current opacity-50 hover:opacity-100">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+<% end %>
