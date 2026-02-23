@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html class="dark">
   <head>
-    <title><%= content_for(:title) || "Admin - Pulse Watch" %></title>
+    <title><%= content_for(:title) || "Admin - PulseWatch" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Pulse Watch">
+    <meta name="application-name" content="PulseWatch">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -12,15 +12,27 @@
 
     <%= yield :head %>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <script>
+      (function() {
+        var theme = localStorage.getItem('theme') || 'dark';
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+      })();
+    </script>
   </head>
 
-  <body class="bg-gray-50 min-h-screen">
+  <body class="bg-slate-50 dark:bg-[#0a0a0f] min-h-screen font-[Outfit] text-gray-900 dark:text-gray-100 transition-colors">
     <%= render "shared/admin_navbar" %>
     <%= render "shared/flash" %>
 

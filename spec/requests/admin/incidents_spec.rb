@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe "Admin::Incidents" do
   let!(:incident) { create(:incident, title: "Test Incident") }
 
+  before { sign_in }
+
   describe "GET /admin/incidents" do
     it "returns 200 and lists incidents" do
       get admin_incidents_path

@@ -1,6 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Admin Monitors", type: :system do
+  let(:user) { create(:user) }
+
+  before { sign_in_as(user) }
+
   it "creates a new monitor" do
     visit new_admin_monitor_path
 

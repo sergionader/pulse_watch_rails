@@ -19,6 +19,44 @@ services:
     volumes:
       - redis_data:/data
 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pulse_watch_web
+    ports:
+      - "3020:3000"
+    volumes:
+      - .:/rails
+      - bundle_data:/usr/local/bundle
+    environment:
+      RAILS_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pulse_watch_sidekiq
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - .:/rails
+      - bundle_data:/usr/local/bundle
+    environment:
+      RAILS_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
 volumes:
   postgres_data:
   redis_data:
+  bundle_data:

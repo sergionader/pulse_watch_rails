@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe "Admin::Monitors" do
   let!(:monitor) { create(:site_monitor, name: "Test Monitor") }
 
+  before { sign_in }
+
   describe "GET /admin/monitors" do
     it "returns 200 and lists monitors" do
       get admin_monitors_path

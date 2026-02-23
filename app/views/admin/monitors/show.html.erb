@@ -1,39 +1,39 @@
 <div class="mb-6">
   <div class="flex justify-between items-center">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900"><%= @monitor.name %></h1>
-      <p class="text-sm text-gray-500 mt-1"><%= @monitor.url %></p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight"><%= @monitor.name %></h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1"><%= @monitor.url %></p>
     </div>
     <div class="flex space-x-3">
-      <%= link_to "Edit", edit_admin_monitor_path(@monitor), class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50" %>
-      <%= link_to "Back", admin_monitors_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50" %>
+      <%= link_to "Edit", edit_admin_monitor_path(@monitor), class: "btn-secondary" %>
+      <%= link_to "Back", admin_monitors_path, class: "btn-secondary" %>
     </div>
   </div>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-  <div class="bg-white rounded-lg shadow p-4">
-    <p class="text-xs font-medium text-gray-500 uppercase">Status</p>
+  <div class="card p-4">
+    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</p>
     <div class="mt-1"><%= status_badge(@monitor.current_status) %></div>
   </div>
-  <div class="bg-white rounded-lg shadow p-4">
-    <p class="text-xs font-medium text-gray-500 uppercase">Method</p>
-    <p class="mt-1 text-sm font-semibold text-gray-900"><%= @monitor.http_method %> (expect <%= @monitor.expected_status %>)</p>
+  <div class="card p-4">
+    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Method</p>
+    <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100"><%= @monitor.http_method %> (expect <%= @monitor.expected_status %>)</p>
   </div>
-  <div class="bg-white rounded-lg shadow p-4">
-    <p class="text-xs font-medium text-gray-500 uppercase">Interval</p>
-    <p class="mt-1 text-sm font-semibold text-gray-900"><%= @monitor.check_interval_seconds %>s</p>
+  <div class="card p-4">
+    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Interval</p>
+    <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100"><%= @monitor.check_interval_seconds %>s</p>
   </div>
-  <div class="bg-white rounded-lg shadow p-4">
-    <p class="text-xs font-medium text-gray-500 uppercase">Active</p>
-    <p class="mt-1 text-sm font-semibold text-gray-900"><%= @monitor.is_active ? "Yes" : "No" %></p>
+  <div class="card p-4">
+    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Active</p>
+    <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100"><%= @monitor.is_active ? "Yes" : "No" %></p>
   </div>
 </div>
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
   <% @uptime.each do |period, percentage| %>
-    <div class="bg-white rounded-lg shadow p-4 text-center">
-      <p class="text-xs font-medium text-gray-500 uppercase">Uptime (<%= period %>)</p>
+    <div class="card p-4 text-center">
+      <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Uptime (<%= period %>)</p>
       <p class="mt-1 text-2xl font-bold <%= percentage && percentage >= 99.9 ? 'text-green-600' : percentage && percentage >= 99 ? 'text-yellow-600' : 'text-red-600' %>">
         <%= percentage ? "#{percentage}%" : "N/A" %>
       </p>
@@ -41,27 +41,27 @@
   <% end %>
 </div>
 
-<div class="bg-white rounded-lg shadow p-6 mb-8">
-  <h2 class="text-lg font-semibold text-gray-900 mb-4">Response Time (24h)</h2>
+<div class="card p-6 mb-8">
+  <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Response Time (24h)</h2>
   <div data-controller="chart" data-chart-url-value="<%= checks_admin_monitor_path(@monitor) %>">
     <canvas data-chart-target="canvas" class="w-full" style="height: 300px;"></canvas>
   </div>
 </div>
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
-  <div class="px-6 py-4 border-b border-gray-200">
-    <h2 class="text-lg font-semibold text-gray-900">Recent Checks</h2>
+<div class="card overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Checks</h2>
   </div>
-  <table class="min-w-full divide-y divide-gray-200">
-    <thead class="bg-gray-50">
+  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+    <thead class="bg-gray-50 dark:bg-gray-800/50">
       <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status Code</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Response Time</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Result</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Time</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status Code</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Response Time</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Result</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-gray-200" id="checks_table">
+    <tbody class="divide-y divide-gray-200 dark:divide-gray-800" id="checks_table">
       <% @recent_checks.each do |check| %>
         <%= render "check_row", check: check %>
       <% end %>
@@ -69,6 +69,6 @@
   </table>
 
   <% if @recent_checks.empty? %>
-    <div class="p-8 text-center text-gray-500">No checks recorded yet.</div>
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">No checks recorded yet.</div>
   <% end %>
 </div>

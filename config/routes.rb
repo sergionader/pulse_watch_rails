@@ -30,6 +30,10 @@ Rails.application.routes.draw do
 
   root "status#index"
 
+  get    "login",  to: "sessions#new",     as: :login
+  post   "login",  to: "sessions#create"
+  delete "logout", to: "sessions#destroy", as: :logout
+
   namespace :admin do
     resources :monitors do
       member do

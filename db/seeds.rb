@@ -1,3 +1,10 @@
+puts "Seeding admin user..."
+
+User.find_or_create_by!(email: "admin@example.com") do |u|
+  u.password = "test1234##"
+  u.password_confirmation = "test1234##"
+end
+
 puts "Seeding monitors..."
 
 monitors = [

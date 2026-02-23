@@ -1,12 +1,12 @@
 <tr id="<%= dom_id(check) %>">
-  <td class="px-6 py-3 text-sm text-gray-500"><%= check.created_at.strftime("%b %d, %Y %H:%M:%S") %></td>
-  <td class="px-6 py-3 text-sm text-gray-900"><%= check.status_code || "N/A" %></td>
-  <td class="px-6 py-3 text-sm text-gray-900"><%= check.response_time_ms ? "#{check.response_time_ms}ms" : "N/A" %></td>
+  <td class="px-6 py-3 text-sm text-gray-500 dark:text-gray-400"><%= check.created_at.strftime("%b %d, %Y %H:%M:%S") %></td>
+  <td class="px-6 py-3 text-sm text-gray-900 dark:text-gray-100"><%= check.status_code || "N/A" %></td>
+  <td class="px-6 py-3 text-sm text-gray-900 dark:text-gray-100"><%= check.response_time_ms ? "#{check.response_time_ms}ms" : "N/A" %></td>
   <td class="px-6 py-3">
     <% if check.successful %>
-      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">OK</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-emerald-900/30 dark:text-emerald-300">OK</span>
     <% else %>
-      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">FAIL</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-rose-900/30 dark:text-rose-300">FAIL</span>
     <% end %>
   </td>
 </tr>

@@ -1,12 +1,14 @@
 # PulseWatch Rails - Progress (2026-02-14)
 
+> **Last Updated:** 2026-02-22 20:56 EST
+
 ## Summary
 
-Implemented Days 1–5 of PulseWatch Rails: models/migrations (Day 1), background jobs/services (Day 2), JSON API layer (Day 3), web UI with real-time Turbo Streams (Day 4), and testing/polish (Day 5). Added model specs, admin request specs, Capybara system specs, CI test pipeline, Sentry integration, and professional README. 140 specs pass with 90.55% line coverage.
+Implemented Days 1–5 of PulseWatch Rails: models/migrations (Day 1), background jobs/services (Day 2), JSON API layer (Day 3), web UI with real-time Turbo Streams (Day 4), and testing/polish (Day 5). Added model specs, admin request specs, Capybara system specs, CI test pipeline, Sentry integration, and professional README. 140 specs pass with 90.55% line coverage. Dockerized the full development environment. Added session-based authentication with `has_secure_password` protecting the admin area. Completed a full frontend redesign with modern minimalist dark mode UI, theme toggle, Google Fonts, and Tailwind component classes.
 
-## Status: ✅ Day 5 Complete
+## Status: ✅ Day 5 Complete — Auth + Frontend Redesign Added
 
-Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, Sentry is configured, README is written.
+Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, Sentry is configured, README is written. Full Docker Compose setup now available for local development.
 
 ## Key Decisions
 
@@ -16,6 +18,9 @@ Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, S
 - `IncidentSerializer` supports opt-in `include_updates:` flag — true for show, false for collection
 - No authentication for Day 3 — planned for a later day
 - Consistent error JSON format: `{ error: { message:, status:, details?: } }`
+- Docker Compose provides all services (web, sidekiq, postgres, redis) — no local Ruby install needed
+- Separate `Dockerfile.dev` for development (mounts source, includes all gem groups) vs production `Dockerfile`
+- Rails app mapped to host port 3020 to avoid conflicts with locally running servers on 3000
 - Pagination defaults: page=1, per_page=20, max=100
 - Web `StatusController` (public) is separate from API `StatusesController` — different inheritance chains
 - Admin controllers inherit from `Admin::BaseController` which sets `layout "admin"`
@@ -25,6 +30,8 @@ Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, S
 - System specs use `rack_test` driver by default for speed; `selenium_headless` only for tests tagged `:js`
 - Sentry enabled only in production/staging environments; DSN and sample rates via ENV vars
 - CI test job uses PostgreSQL 16 service container with `DATABASE_URL` env var
+- Docker entrypoint compiles Tailwind CSS (`tailwindcss:build`) and starts watcher (`tailwindcss:watch &`) for live development reloading
+- README includes screenshots from `docs/screenshots/` ordered by filename prefix (01, 02, 03)
 
 ## Changes Made
 
@@ -94,9 +101,14 @@ Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, S
 | `spec/system/admin_monitors_spec.rb` | Created — Capybara system tests for admin monitor flows (4 examples) |
 | `config/initializers/sentry.rb` | Created — Sentry error tracking initializer |
 | `.github/workflows/ci.yml` | Added `test` job with PostgreSQL 16 service, schema load, rspec, coverage upload |
-| `README.md` | Replaced placeholder with professional docs: tech stack, setup, API, architecture |
+| `README.md` | Replaced placeholder with professional docs: tech stack, setup, API, architecture. Later simplified to Docker-only instructions |
+| `Dockerfile.dev` | Created — development Dockerfile with all gem groups, source volume mount |
+| `docker-compose.yml` | Updated — added `web` (Rails on port 3020) and `sidekiq` services with env vars for DB/Redis connectivity |
 | `app/views/admin/monitors/_form.html.erb` | Fixed — added explicit `url:` to fix SiteMonitor routing mismatch |
 | `app/views/admin/incidents/_update_form.html.erb` | Fixed — removed double-wrapped array in `form_with` model |
+| `bin/docker-entrypoint` | Updated — added `tailwindcss:build` + `tailwindcss:watch &` for CSS compilation in Docker |
+| `README.md` | Updated — added project introduction and screenshots section with 3 images |
+| `docs/progress/progress_frontend_redesign.md` | Created — detailed progress file for the frontend redesign session |
 
 ## Technical Details
 
@@ -134,14 +146,33 @@ Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, S
 - **Problem**: `form_with(model: [[:admin, incident, incident_update]], ...)` had an extra wrapping array causing `undefined method 'model_name' for Array`
 - **Solution**: Changed to single array: `model: [:admin, incident, incident_update]`
 
+### Stale Tailwind CSS in Docker (2026-02-22)
+
+- **Problem**: Docker CMD runs `bin/rails server` only — the Tailwind CSS watcher (`tailwindcss:watch`) from `Procfile.dev` was not running, so `app/assets/builds/tailwind.css` was stale and missing all `dark:` variant classes. SVGs and elements rendered unstyled (giant heart icon on login page).
+- **Solution**: Added `bin/rails tailwindcss:build` and `bin/rails tailwindcss:watch &` to `bin/docker-entrypoint` so CSS is compiled on container start and auto-recompiles during development.
+
+### Docker BuildKit cache corruption (2026-02-22)
+
+- **Problem**: `docker compose up --build` failed with `parent snapshot does not exist: not found` — BuildKit cache corruption after volume prune.
+- **Solution**: Cleared build cache with `docker builder prune -af` before rebuilding.
+
+## Related Plans
+
+- `/Users/sergion/.claude/plans/keen-wandering-mitten.md` — Add Basic Authentication to PulseWatch Rails
+
 ## Outstanding Tasks
 
-- [ ] Add authentication (planned for a later day)
+- [x] ~~Add authentication~~ — Done 2026-02-22 (session-based with `has_secure_password`)
+- [x] ~~Frontend redesign with dark mode~~ — Done 2026-02-22 (see `progress_frontend_redesign.md`)
 - [ ] Add rate limiting for API endpoints
 - [ ] Add API documentation (Swagger/OpenAPI)
 - [x] ~~Web UI tests (controller/system specs for status page and admin CRUD)~~ — Done Day 5
 - [ ] Redis/SolidCable adapter for ActionCable in production (currently async adapter)
 - [ ] Increase branch coverage above 80% (currently 70.91%)
+- [x] ~~Dockerize full development environment~~ — Done 2026-02-22
+- [x] ~~Fix Tailwind CSS compilation in Docker~~ — Done 2026-02-22 (entrypoint runs build + watcher)
+- [x] ~~Add screenshots and introduction to README~~ — Done 2026-02-22
+- [x] ~~Security audit for public repo readiness~~ — Done 2026-02-22
 
 ---
 
@@ -200,56 +231,41 @@ Days 1–5 are fully implemented. Testing exceeds 80% coverage, CI runs tests, S
 
 ### Prerequisites
 
-- Ruby (version in `.ruby-version`)
-- PostgreSQL 16+ running locally
-- Chrome/Chromium (only needed for system specs tagged `:js`)
-- Redis (only needed for Sidekiq background jobs)
+- Docker and Docker Compose
 
-### 1. Install Dependencies
+### 1. Start All Services
 
 ```bash
-bundle install
+docker compose up --build
 ```
 
-### 2. Create and Migrate Database
+The database is automatically created/migrated on first run.
+
+### 2. Run the Full Test Suite
 
 ```bash
-bin/rails db:create
-bin/rails db:migrate
-```
-
-For test database specifically:
-
-```bash
-RAILS_ENV=test bin/rails db:create
-RAILS_ENV=test bin/rails db:schema:load
-```
-
-### 3. Run the Full Test Suite
-
-```bash
-bundle exec rspec
+docker compose exec web bundle exec rspec
 ```
 
 Expected: **140 examples, 0 failures** with line coverage >80%.
 
-### 4. Run Tests by Category
+### 3. Run Tests by Category
 
 ```bash
 # Model specs only
-bundle exec rspec spec/models
+docker compose exec web bundle exec rspec spec/models
 
 # Request specs (API + admin)
-bundle exec rspec spec/requests
+docker compose exec web bundle exec rspec spec/requests
 
 # System specs (Capybara browser tests)
-bundle exec rspec spec/system
+docker compose exec web bundle exec rspec spec/system
 
 # Jobs and services
-bundle exec rspec spec/jobs spec/services
+docker compose exec web bundle exec rspec spec/jobs spec/services
 ```
 
-### 5. View Coverage Report
+### 4. View Coverage Report
 
 After running specs, open the HTML coverage report:
 
@@ -257,29 +273,73 @@ After running specs, open the HTML coverage report:
 open coverage/index.html
 ```
 
-### 6. Run Linter
+### 5. Run Linter
 
 ```bash
-bundle exec rubocop
+docker compose exec web bundle exec rubocop
 ```
 
-### 7. Start the Server (Manual Testing)
+### 6. Manual Testing
 
-```bash
-# Start Rails + Tailwind CSS watcher
-bin/dev
-```
+With services running, visit:
+- Public status page: http://localhost:3020/
+- Admin monitors: http://localhost:3020/admin/monitors
+- Admin incidents: http://localhost:3020/admin/incidents
+- API status: http://localhost:3020/api/v1/status
 
-Then visit:
-- Public status page: http://localhost:3000/
-- Admin monitors: http://localhost:3000/admin/monitors
-- Admin incidents: http://localhost:3000/admin/incidents
-- API status: http://localhost:3000/api/v1/status
+### 2026-02-22 18:10 EST — Docker Dev Environment
 
-### 8. Start Background Jobs (Optional)
+- Identified that `docker-compose.yml` only had postgres and redis — no Rails web service
+- User hit errors trying to run locally: system Ruby (2.6) instead of 3.3.10, then `tsort` gem load error
+- Decided to go full-Docker instead of debugging local Ruby setup
+- Created `Dockerfile.dev` — development-focused image (all gem groups, no asset precompilation, source mounted as volume)
+- Updated `docker-compose.yml` — added `web` service (Rails on port 3020:3000) and `sidekiq` service, both connecting to postgres/redis via Docker networking (`DB_HOST=postgres`, `DB_PORT=5432`, `REDIS_URL=redis://redis:6379/0`)
+- Used port 3020 on host to avoid conflict with existing process on port 3000
+- Simplified README to Docker-only setup instructions: single `docker compose up --build` command, all test/lint/security commands via `docker compose exec web`
+- Removed local Ruby install instructions, rbenv/asdf details, and related troubleshooting from README
 
-```bash
-bundle exec sidekiq
-```
+### 2026-02-22 ~18:30 EST — Authentication
 
-This runs `ExecuteMonitorCheckJob` and `ScheduleMonitorChecksJob` for periodic health checks.
+- Uncommented bcrypt gem, created User model with `has_secure_password` and UUID PK
+- Added `current_user` helper and `require_authentication` guard to ApplicationController
+- Protected admin area via `before_action :require_authentication` in `Admin::BaseController`
+- Created `SessionsController` with login/logout flows, `sessions/new.html.erb` login form
+- Added routes: `GET/POST /login`, `DELETE /logout`
+- Seeded admin user: `admin@example.com` / `test1234##` (idempotent with `find_or_create_by!`)
+- Fixed Docker entrypoint to auto-run `db:prepare` and `db:seed` on container start
+- Updated admin navbar: Status Page link opens in new tab, shows current user email + sign out
+- Created test helpers (`sign_in`/`sign_in_as`), user factory, user model spec, sessions request spec
+- Updated all existing admin specs with `before { sign_in }`
+
+### 2026-02-22 ~19:00 EST — Frontend Redesign (Dark Mode)
+
+- Full details in `docs/progress/progress_frontend_redesign.md`
+- Modern minimalist design defaulting to dark mode with theme toggle
+- Google Fonts: Outfit (display) + IBM Plex Mono (data)
+- Tailwind component classes: `.card`, `.btn-primary`, `.btn-secondary`, `.input-field`, `.label-field`
+- Theme controller (Stimulus) with localStorage persistence and FOUC prevention
+- Updated all 20+ views, both layouts, helpers, and Chart.js controller with dark mode variants
+
+### 2026-02-22 ~20:00 EST — Tailwind Fix, Docker Rebuild, README Update
+
+- Discovered Tailwind CSS was not being compiled in Docker — `bin/rails server` doesn't run the Tailwind watcher
+- The stale `app/assets/builds/tailwind.css` was missing all `dark:` variant classes, causing unstyled rendering (giant SVG on login page)
+- Fixed `bin/docker-entrypoint` to run `tailwindcss:build` on startup and `tailwindcss:watch &` in background for live dev reloading
+- Hit Docker BuildKit cache corruption (`parent snapshot does not exist`) — resolved with `docker builder prune -af`
+- Successfully rebuilt and verified all 4 containers running (web, sidekiq, postgres, redis) with Puma serving on port 3020
+- Updated `README.md` — added project introduction paragraph explaining PulseWatch's purpose, and screenshots section with 3 images from `docs/screenshots/` (status page, admin dashboard, new monitor form)
+- Created `docs/progress/progress_frontend_redesign.md` with detailed frontend redesign session notes
+
+### 2026-02-22 ~20:56 EST — Security Audit for Public Repo
+
+- Scanned entire project for sensitive/private information before making repo public on GitHub
+- **Findings — safe to publish:**
+  - `config/master.key` properly gitignored (never committed)
+  - `.env*` files gitignored
+  - Production credentials use ENV vars (database, Sentry, Redis)
+  - No API keys, tokens, private keys, or cloud credentials found
+  - `coverage/` and `tmp/storage/` untracked
+  - All emails use `example.com` placeholders
+- **Acceptable for open-source:** hardcoded dev seed password (`test1234##` in `db/seeds.rb`, specs, README) — standard practice for open-source Rails projects with development-only defaults
+- Confirmed `tmp/storage/` is Rails Active Storage local directory — empty (just `.keep`), already in `.gitignore`, nothing to clean up
+- **Verdict:** Project is safe to make public

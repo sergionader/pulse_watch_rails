@@ -19,14 +19,20 @@ export default class extends Controller {
     const response = await fetch(this.urlValue)
     const data = await response.json()
 
+    const isDark = document.documentElement.classList.contains('dark')
+
     if (data.length === 0) {
-      this.canvasTarget.parentElement.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">No check data available yet.</p>'
+      this.canvasTarget.parentElement.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">No check data available yet.</p>'
       return
     }
 
     const labels = data.map(d => new Date(d.time).toLocaleTimeString())
     const responseTimes = data.map(d => d.response_time_ms)
     const colors = data.map(d => d.successful ? "rgba(34, 197, 94, 0.8)" : "rgba(239, 68, 68, 0.8)")
+
+    const gridColor = isDark ? 'rgba(75, 85, 99, 0.3)' : 'rgba(0, 0, 0, 0.1)'
+    const tickColor = isDark ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)'
+    const titleColor = isDark ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)'
 
     const Chart = (await import("chart.js/auto")).default
 
@@ -38,7 +44,7 @@ export default class extends Controller {
           label: "Response Time (ms)",
           data: responseTimes,
           borderColor: "rgb(99, 102, 241)",
-          backgroundColor: "rgba(99, 102, 241, 0.1)",
+          backgroundColor: isDark ? "rgba(99, 102, 241, 0.15)" : "rgba(99, 102, 241, 0.1)",
           pointBackgroundColor: colors,
           pointBorderColor: colors,
           fill: true,
@@ -54,10 +60,26 @@ export default class extends Controller {
         scales: {
           y: {
             beginAtZero: true,
-            title: { display: true, text: "ms" }
+            title: {
+              display: true,
+              text: "ms",
+              color: titleColor
+            },
+            ticks: {
+              color: tickColor
+            },
+            grid: {
+              color: gridColor
+            }
           },
           x: {
-            ticks: { maxTicksLimit: 12 }
+            ticks: {
+              maxTicksLimit: 12,
+              color: tickColor
+            },
+            grid: {
+              color: gridColor
+            }
           }
         }
       }

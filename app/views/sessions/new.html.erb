@@ -1,0 +1,31 @@
+<% content_for(:title, "Sign In - PulseWatch") %>
+
+<div class="min-h-[60vh] flex items-center justify-center">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <svg class="h-10 w-10 text-indigo-600 dark:text-indigo-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+      </svg>
+      <h1 class="text-xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Sign in to PulseWatch</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Enter your credentials to continue</p>
+    </div>
+
+    <div class="card p-6">
+      <%= form_with url: login_path, method: :post, class: "space-y-5" do |f| %>
+        <div>
+          <%= f.label :email, class: "label-field" %>
+          <%= f.email_field :email, required: true, autofocus: true, class: "input-field", placeholder: "you@example.com" %>
+        </div>
+
+        <div>
+          <%= f.label :password, class: "label-field" %>
+          <%= f.password_field :password, required: true, class: "input-field" %>
+        </div>
+
+        <div>
+          <%= f.submit "Sign in", class: "btn-primary w-full justify-center" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,13 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+# If running the rails server then create/migrate database and seed
+if echo "$@" | grep -q "rails.*server"; then
   ./bin/rails db:prepare
+  ./bin/rails db:seed
+
+  # Compile Tailwind CSS and start watcher in background for live reloading
+  ./bin/rails tailwindcss:build
+  ./bin/rails tailwindcss:watch &
 fi
 
 exec "${@}"

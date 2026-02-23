@@ -1,7 +1,7 @@
 <div id="<%= dom_id(incident_update) %>" class="flex space-x-3">
   <div class="flex-shrink-0">
-    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-      <svg class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <div class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+      <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
       </svg>
     </div>
@@ -9,8 +9,8 @@
   <div class="flex-1">
     <div class="flex items-center space-x-2">
       <%= incident_status_badge(incident_update.status) %>
-      <span class="text-xs text-gray-500"><%= incident_update.created_at.strftime("%b %d, %Y at %I:%M %p") %></span>
+      <span class="text-xs text-gray-500 dark:text-gray-400"><%= incident_update.created_at.strftime("%b %d, %Y at %I:%M %p") %></span>
     </div>
-    <p class="mt-1 text-sm text-gray-700"><%= incident_update.message %></p>
+    <p class="mt-1 text-sm text-gray-700 dark:text-gray-300"><%= incident_update.message %></p>
   </div>
 </div>
