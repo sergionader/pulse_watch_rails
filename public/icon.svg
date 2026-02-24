@@ -1,3 +1,11 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <path d="M256 160c-24 0-44 12-56 32-12-20-32-32-56-32-36 0-64 28-64 64 0 88 120 152 120 152s120-64 120-152c0-36-28-64-64-64z" fill="rgba(255,255,255,0.2)"/>
+  <polyline points="80,288 168,288 200,228 232,348 264,198 296,318 328,258 360,288 432,288" fill="none" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
